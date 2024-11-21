@@ -71,7 +71,7 @@ var (
 	// ErrTrayNotReadyYet is returned by functions when they are called before the tray has been initialized.
 	ErrTrayNotReadyYet = errors.New("tray not ready yet")
 
-	MessageHandlers = map[uint32]func(hwnd windows.Handle, msg uint32, wparam uintptr, lparam uintptr) (bool, uintptr) {}
+	MessageHandlers = map[uint32]func(uintptr, uint32, uintptr, uintptr) (bool, uintptr) {}
 )
 
 // Contains window class information.
@@ -306,7 +306,7 @@ func (t *winTray) wndProc(hWnd windows.Handle, message uint32, wParam, lParam ui
 	)
 
 	if handler := MessageHandlers[message]; handler != nil {
-		if ok, r := handler(hWnd, message, wParam, lParam); ok {
+		if ok, r := handler(uintptr(hWnd), message, wParam, lParam); ok {
 			return r
 		}
 	}
